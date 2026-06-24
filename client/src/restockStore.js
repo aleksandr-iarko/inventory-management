@@ -1,3 +1,3 @@
-import { reactive } from 'vue'
+import { reactive } from "vue";
 
-export const restockStore = reactive({ orders: [] })
+export const restockStore = reactive({ orders: [] });
