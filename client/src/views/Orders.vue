@@ -5,6 +5,48 @@
       <p>{{ t("orders.description") }}</p>
     </div>
 
+    <!-- Submitted restocking orders from the restock planner -->
+    <div
+      v-if="restockStore.orders.length > 0"
+      class="card submitted-orders-card"
+    >
+      <div class="card-header">
+        <h3 class="card-title">
+          Submitted Restocking Orders ({{ restockStore.orders.length }})
+        </h3>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Order Number</th>
+              <th>Items</th>
+              <th>Total Value</th>
+              <th>Submitted</th>
+              <th>Expected Delivery</th>
+              <th>Lead Time</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="order in restockStore.orders" :key="order.id">
+              <td>
+                <strong>{{ order.order_number }}</strong>
+              </td>
+              <td>{{ order.items.length }} items</td>
+              <td>
+                <strong>${{ order.total_value.toLocaleString() }}</strong>
+              </td>
+              <td>{{ formatDate(order.order_date) }}</td>
+              <td>{{ formatDate(order.expected_delivery) }}</td>
+              <td><span class="badge info">14 days</span></td>
+              <td><span class="badge warning">Submitted</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <div v-if="loading" class="loading">{{ t("common.loading") }}</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
@@ -119,6 +161,7 @@ import { ref, onMounted, watch, computed } from "vue";
 import { api } from "../api";
 import { useFilters } from "../composables/useFilters";
 import { useI18n } from "../composables/useI18n";
+import { restockStore } from "../restockStore";
 
 export default {
   name: "Orders",
@@ -210,6 +253,7 @@ export default {
       currencySymbol,
       translateProductName,
       translateCustomerName,
+      restockStore,
     };
   },
 };
@@ -321,5 +365,9 @@ export default {
 .item-meta {
   font-size: 0.813rem;
   color: #64748b;
+}
+
+.submitted-orders-card {
+  border-left: 3px solid #2563eb;
 }
 </style>
