@@ -299,7 +299,8 @@ export default {
     const selectedCostData = ref(null);
 
     // Use shared filters
-    const { selectedPeriod, getCurrentFilters } = useFilters();
+    const { selectedPeriod, selectedLocation, getCurrentFilters } =
+      useFilters();
 
     // Monthly spending chart always shows all months (not filtered)
     const monthlySpending = computed(() => {
@@ -500,7 +501,7 @@ export default {
           api.getMonthlySpending(),
           api.getCategorySpending(),
           api.getTransactions(),
-          api.getOrders(),
+          api.getOrders({ warehouse: selectedLocation.value }),
         ]);
 
         summaryData.value = summaryRes;
@@ -515,9 +516,9 @@ export default {
       }
     };
 
-    // Watch for period filter changes
-    watch([selectedPeriod], () => {
-      // Data will automatically update via computed properties
+    // Watch for location filter changes — reload orders with new warehouse filter
+    watch([selectedLocation], () => {
+      loadData();
     });
 
     const formatCurrency = (value) => {
